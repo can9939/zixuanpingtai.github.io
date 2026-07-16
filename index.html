@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1,user-scalable=no">
+    <title>师生账号服务助手</title>
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box;font-family:微软雅黑}
+        body{background:#f2f6fc;height:100vh;display:flex;flex-direction:column}
+        .top{background:#1967d2;color:#fff;padding:16px;text-align:center;font-size:17px;border-radius:0 0 25px 25px}
+        .chat{flex:1;padding:15px;overflow-y:auto}
+        .msg{margin:14px 0;display:flex}
+        .my{justify-content:flex-end}
+        .bot{justify-content:flex-start}
+        .con{padding:12px 15px;border-radius:20px;max-width:85%;line-height:1.6;font-size:15px}
+        .my .con{background:#1967d2;color:#fff;border-bottom-right-radius:5px}
+        .bot .con{background:#fff;border:1px solid #dde5f0;color:#222;border-bottom-left-radius:5px}
+        .tel-num{color:#1967d2;text-decoration:underline;cursor:pointer}
+        .foot{display:flex;padding:12px;background:#fff;border-top:1px solid #eee;gap:10px}
+        #input{flex:1;padding:11px 16px;border:1px solid #ccc;border-radius:25px;outline:none;font-size:15px}
+        #send{padding:11px 20px;border:none;background:#1967d2;color:#fff;border-radius:25px;font-size:15px}
+    </style>
+</head>
+<body>
+    <div class="top">师生账号服务助手</div>
+    <div class="chat" id="chatBox">
+        <div class="bot msg">
+            <div class="con">您好！我可以解答账号注册、密码修改相关问题，有需要直接提问即可</div>
+        </div>
+    </div>
+    <div class="foot">
+        <input id="input" placeholder="输入你的问题...">
+        <button id="send">发送</button>
+    </div>
+
+<script>
+let chatBox = document.getElementById('chatBox');
+let input = document.getElementById('input');
+let send = document.getElementById('send');
+const phone = "13597188424";
+
+let answerData = [
+    {
+        key:["忘记学生密码","学生端密码忘了"],
+        text:"学生忘了登录密码：在学生登录页面点忘记密码，跟着页面提示操作，就能重新设置新密码，设好新密码直接登录就可以了。"
+    },
+    {
+        key:["忘记教师密码","教师端密码忘了"],
+        text:"老师忘记密码：打开老师登录页面，点忘记密码，填好预留信息验证一下，通过之后就能换新的登录密码。"
+    },
+    {
+        key:["学生端注册","怎么注册学生账号"],
+        text:"想注册学生账号：打开学生登录页面，找到注册按钮，填上自己信息，自己设置账号和密码，提交完就注册成功能用了。"
+    },
+    {
+        key:["教师端注册","怎么注册教师账号"],
+        text:"注册老师账号：进到老师注册页面，填好自己身份信息，设置好账号密码，提交等通过之后，就能正常登录使用。"
+    },
+    {
+        key:["修改学生密码","更改学生密码"],
+        text:"学生想改登录密码：先登录进去，找到个人设置，点修改密码，输旧密码再填新密码，保存好就改好了。"
+    },
+    {
+        key:["修改教师密码","更改教师密码"],
+        text:"老师改密码：登录进老师页面，找到个人设置，选择改密码，输原来的密码，再设置新密码保存就行。"
+    },
+    {
+        key:["密码错误","密码不对"],
+        text:"提示密码错了，先看看大小写有没有搞错，实在想不起来，直接点忘记密码重新弄一个新密码就好。"
+    }
+];
+
+function getReply(msg){
+    let m = msg.toLowerCase();
+    if(m.includes("人工")){
+        return `<span class="tel-num" onclick="window.location.href='tel:${phone}'">${phone}</span>，请通过此手机号码来联系人工服务`;
+    }
+    for(let item of answerData){
+        for(let word of item.key){
+            if(m.includes(word)){
+                return item.text;
+            }
+        }
+    }
+    return "有任何不懂的问题都可以详细说明，我会尽力为你解答，如需协助可呼叫人工服务。";
+}
+
+function sendMsg(){
+    let val = input.value.trim();
+    if(!val)return;
+    chatBox.innerHTML += `<div class="my msg"><div class="con">${val}</div></div>`;
+    input.value = "";
+    chatBox.scrollTop = chatBox.scrollHeight;
+    setTimeout(()=>{
+        let res = getReply(val);
+        chatBox.innerHTML += `<div class="bot msg"><div class="con">${res}</div></div>`;
+        chatBox.scrollTop = chatBox.scrollHeight;
+    },300)
+}
+
+send.onclick = sendMsg;
+input.onkeydown=e=>{if(e.key==='Enter')sendMsg()}
+</script>
+</body>
+</html>
